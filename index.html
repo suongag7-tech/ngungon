@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chúc Chị Bé Ngủ Ngon 🌙💿</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+    background: black;
+    color: white;
+    height: 100vh;
+  }
+
+  /* ---------- Intro ---------- */
+  #intro {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: radial-gradient(circle at center, #101018, #000);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 10;
+    animation: fadeOut 2s ease 5s forwards;
+  }
+
+  #intro h1 {
+    font-size: 2em;
+    color: #fff;
+    text-shadow: 0 0 12px #ffccff;
+    opacity: 0;
+    animation: fadeIn 2s ease forwards 1s;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; transform: scale(1.05); }
+  }
+  @keyframes fadeOut {
+    to { opacity: 0; visibility: hidden; }
+  }
+
+  /* ---------- Background sao ---------- */
+  .stars {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    animation: moveStars 20s linear infinite;
+  }
+
+  @keyframes moveStars {
+    0% { transform: translateY(0px); opacity: 1; }
+    100% { transform: translateY(200px); opacity: 0.2; }
+  }
+
+  /* ---------- Container ---------- */
+  #main {
+    display: none;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    justify-items: center;
+    margin-top: 80px;
+  }
+
+  /* ---------- Đĩa nhạc (ảnh) ---------- */
+  .disc {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background-image: url('dia.png');
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    cursor: pointer;
+    transition: transform 0.5s ease;
+  }
+
+  .disc.playing {
+    animation: spin 4s linear infinite;
+    box-shadow: 0 0 25px #ff99cc;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .message {
+    margin-top: 10px;
+    font-size: 0.95em;
+    opacity: 0;
+    transition: opacity 1s ease;
+    text-align: center;
+    width: 160px;
+  }
+
+  .message.show {
+    opacity: 1;
+  }
+
+</style>
+</head>
+<body>
+
+<div id="intro">
+  <h1>Chúc chị bé ngủ thật ngon và quên hết mọi muộn phiền nha 🌙</h1>
+</div>
+
+<div id="main">
+  <div class="grid">
+    <div class="disc" data-index="0"></div>
+    <div class="disc" data-index="1"></div>
+    <div class="disc" data-index="2"></div>
+    <div class="disc" data-index="3"></div>
+    <div class="disc" data-index="4"></div>
+    <div class="disc" data-index="5"></div>
+  </div>
+</div>
+
+<script>
+  /* ---------- Hiệu ứng sao ---------- */
+  for (let i = 0; i < 150; i++) {
+    let s = document.createElement('div');
+    s.classList.add('stars');
+    s.style.top = Math.random() * window.innerHeight + 'px';
+    s.style.left = Math.random() * window.innerWidth + 'px';
+    s.style.animationDuration = 15 + Math.random() * 10 + 's';
+    s.style.opacity = Math.random();
+    document.body.appendChild(s);
+  }
+
+  /* ---------- Chuyển intro ---------- */
+  setTimeout(() => {
+    document.getElementById('intro').style.display = 'none';
+    const main = document.getElementById('main');
+    main.style.display = 'flex';
+  }, 7000);
+
+  /* ---------- Nhạc + lời chúc ---------- */
+  const songs = [
+    'song1.mp3',
+    'song2.mp3',
+    'song3.mp3',
+    'song4.mp3',
+    'song5.mp3',
+    'song6.mp3'
+  ];
+
+  const messages = [
+    'Hy vọng đêm nay là một đêm bình yên, không còn suy nghĩ nào quấy rầy chị bé 🌙',
+    'Ngủ thật ngon, để sáng mai thức dậy thấy mình nhẹ lòng hơn nha 🌷',
+    'Chúc chị bé có những giấc mơ dịu dàng như ánh trăng 💫',
+    'Nếu mệt rồi, thì cứ để mọi thứ ngủ cùng giấc mơ chị nha 🍃',
+    'Chúc chị bé được ôm trong bình yên và ấm áp của đêm 💞',
+    'Chị bé ngủ ngon nha còn muộn phiền của chị để bé gom lại ship nó ra vũ trụ 💐'
+  ];
+
+  const discs = document.querySelectorAll('.disc');
+  const audios = [];
+  const msgEls = [];
+
+  discs.forEach((disc, i) => {
+    const audio = new Audio(songs[i]);
+    audios.push(audio);
+
+    const msg = document.createElement('div');
+    msg.classList.add('message');
+    msg.innerText = messages[i];
+    disc.insertAdjacentElement('afterend', msg);
+    msgEls.push(msg);
+
+    disc.addEventListener('click', () => {
+      const isPlaying = disc.classList.contains('playing');
+
+      // Dừng tất cả
+      audios.forEach(a => { a.pause(); a.currentTime = 0; });
+      discs.forEach(d => d.classList.remove('playing'));
+      msgEls.forEach(m => m.classList.remove('show'));
+
+      if (!isPlaying) {
+        disc.classList.add('playing');
+        audio.play();
+        msg.classList.add('show');
+
+        audio.addEventListener('ended', () => {
+          disc.classList.remove('playing');
+          msg.classList.remove('show');
+        });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
