@@ -2,27 +2,25 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chúc Chị Bé Ngủ Ngon 🌙💿</title>
 <style>
   html, body {
     margin: 0;
     padding: 0;
-    overflow: hidden;
-    font-family: 'Poppins', sans-serif;
+    height: 100%;
     background: black;
+    font-family: 'Poppins', sans-serif;
     color: white;
-    height: 100vh;
-    width: 100vw;
-    touch-action: manipulation;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
   }
 
   /* ---------- Intro ---------- */
   #intro {
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: radial-gradient(circle at center, #1a1a2a, #000);
+    inset: 0;
+    background: radial-gradient(circle at center, #101018, #000);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -32,54 +30,58 @@
   }
 
   #intro h1 {
-    font-size: 1.4em;
-    color: #fff;
+    font-size: 1.6em;
     text-align: center;
-    line-height: 1.6em;
+    color: #fff;
     text-shadow: 0 0 12px #ffccff;
+    padding: 0 20px;
+    line-height: 1.4;
     opacity: 0;
     animation: fadeIn 2s ease forwards 1s;
-    padding: 0 20px;
   }
 
   @keyframes fadeIn { to { opacity: 1; transform: scale(1.05); } }
   @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
   /* ---------- Background sao ---------- */
-  .stars {
+  .star {
     position: absolute;
     width: 2px;
     height: 2px;
     background: white;
-    animation: moveStars 25s linear infinite;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: moveStars 18s linear infinite;
+    transform: translateZ(0);
   }
 
   @keyframes moveStars {
     0% { transform: translateY(0px); opacity: 1; }
-    100% { transform: translateY(200px); opacity: 0.3; }
+    100% { transform: translateY(200px); opacity: 0.2; }
   }
 
-  /* ---------- Container ---------- */
+  /* ---------- Main ---------- */
   #main {
     display: none;
     width: 100%;
     height: 100%;
-    align-items: center;
-    justify-content: flex-start;
+    min-height: 100vh;
+    display: flex;
     flex-direction: column;
-    padding-top: 80px;
+    align-items: center;
+    justify-content: center;
+    transform: translateZ(0);
   }
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 24px;
+    padding: 20px;
     justify-items: center;
-    width: 90%;
-    max-width: 500px;
   }
 
-  /* ---------- Đĩa nhạc (ảnh) ---------- */
+  /* ---------- Đĩa nhạc ---------- */
   .disc {
     width: 120px;
     height: 120px;
@@ -87,9 +89,10 @@
     background-image: url('dia.png');
     background-size: cover;
     background-position: center;
-    box-shadow: 0 0 12px rgba(255,255,255,0.3);
+    box-shadow: 0 0 12px rgba(255,255,255,0.2);
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s ease;
+    transform: translateZ(0);
   }
 
   .disc:active {
@@ -102,33 +105,35 @@
   }
 
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from { transform: rotate(0deg) translateZ(0); }
+    to { transform: rotate(360deg) translateZ(0); }
   }
 
   .message {
-    margin-top: 10px;
+    margin-top: 8px;
     font-size: 0.9em;
-    opacity: 0;
-    transition: opacity 0.8s ease;
     text-align: center;
-    width: 150px;
-    line-height: 1.4em;
+    opacity: 0;
+    width: 140px;
+    line-height: 1.3;
+    transition: opacity 0.8s ease;
   }
 
-  .message.show { opacity: 1; }
-
-  @media (min-width: 768px) {
-    .grid { grid-template-columns: repeat(3, 1fr); gap: 40px; }
-    .disc { width: 140px; height: 140px; }
+  .message.show {
+    opacity: 1;
   }
 
+  @media (max-width: 480px) {
+    .disc { width: 90px; height: 90px; }
+    .message { width: 110px; font-size: 0.8em; }
+    #intro h1 { font-size: 1.3em; }
+  }
 </style>
 </head>
 <body>
 
 <div id="intro">
-  <h1>Chúc chị bé ngủ thật ngon và quên hết mọi muộn phiền nha 🌙💤</h1>
+  <h1>Chúc chị bé ngủ thật ngon và quên hết mọi muộn phiền nha 🌙</h1>
 </div>
 
 <div id="main">
@@ -144,13 +149,13 @@
 
 <script>
   /* ---------- Hiệu ứng sao ---------- */
-  const numStars = (window.innerWidth < 600) ? 100 : 200;
-  for (let i = 0; i < numStars; i++) {
-    let s = document.createElement('div');
-    s.classList.add('stars');
+  const starCount = window.innerWidth < 500 ? 80 : 150;
+  for (let i = 0; i < starCount; i++) {
+    const s = document.createElement('div');
+    s.classList.add('star');
     s.style.top = Math.random() * window.innerHeight + 'px';
     s.style.left = Math.random() * window.innerWidth + 'px';
-    s.style.animationDuration = 15 + Math.random() * 15 + 's';
+    s.style.animationDuration = 12 + Math.random() * 10 + 's';
     s.style.opacity = Math.random();
     document.body.appendChild(s);
   }
@@ -158,8 +163,7 @@
   /* ---------- Chuyển intro ---------- */
   setTimeout(() => {
     document.getElementById('intro').style.display = 'none';
-    const main = document.getElementById('main');
-    main.style.display = 'flex';
+    document.getElementById('main').style.display = 'flex';
   }, 7000);
 
   /* ---------- Nhạc + lời chúc ---------- */
@@ -174,7 +178,7 @@
     'Chúc chị bé có những giấc mơ dịu dàng như ánh trăng 💫',
     'Nếu mệt rồi, thì cứ để mọi thứ ngủ cùng giấc mơ nha 🍃',
     'Chúc chị bé được ôm trong bình yên và ấm áp của đêm 💞',
-    'Chị bé ngủ ngon nha còn muộn phiền của chị để bé gom lại ship nó ra vũ trụ 💐'
+    'Chị bé ngủ ngon nha, còn muộn phiền của chị để bé gom lại ship nó ra vũ trụ 💐'
   ];
 
   const discs = document.querySelectorAll('.disc');
@@ -183,7 +187,7 @@
 
   discs.forEach((disc, i) => {
     const audio = new Audio(songs[i]);
-    audio.preload = 'none'; // nhẹ hơn cho mobile
+    audio.preload = "auto";
     audios.push(audio);
 
     const msg = document.createElement('div');
@@ -192,29 +196,34 @@
     disc.insertAdjacentElement('afterend', msg);
     msgEls.push(msg);
 
-    disc.addEventListener('touchstart', () => disc.click()); // đảm bảo nhận touch
-
     disc.addEventListener('click', () => {
       const isPlaying = disc.classList.contains('playing');
-
       audios.forEach(a => { a.pause(); a.currentTime = 0; });
       discs.forEach(d => d.classList.remove('playing'));
       msgEls.forEach(m => m.classList.remove('show'));
 
       if (!isPlaying) {
         disc.classList.add('playing');
-        audio.play().catch(err => console.log('User chưa tương tác:', err));
+        audio.play();
         msg.classList.add('show');
 
         audio.addEventListener('ended', () => {
           disc.classList.remove('playing');
           msg.classList.remove('show');
-        });
+        }, { once: true });
       }
     });
+  });
+
+  /* ---------- Tạm dừng hiệu ứng khi tab bị ẩn ---------- */
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      audios.forEach(a => a.pause());
+      discs.forEach(d => d.classList.remove('playing'));
+      msgEls.forEach(m => m.classList.remove('show'));
+    }
   });
 </script>
 
 </body>
 </html>
-
