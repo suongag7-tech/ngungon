@@ -2,10 +2,10 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>Chúc Chị Bé Ngủ Ngon 🌙💿</title>
 <style>
-  body, html {
+  html, body {
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -13,14 +13,16 @@
     background: black;
     color: white;
     height: 100vh;
+    width: 100vw;
+    touch-action: manipulation;
   }
 
   /* ---------- Intro ---------- */
   #intro {
-    position: absolute;
+    position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: radial-gradient(circle at center, #101018, #000);
+    background: radial-gradient(circle at center, #1a1a2a, #000);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -30,19 +32,18 @@
   }
 
   #intro h1 {
-    font-size: 2em;
+    font-size: 1.4em;
     color: #fff;
+    text-align: center;
+    line-height: 1.6em;
     text-shadow: 0 0 12px #ffccff;
     opacity: 0;
     animation: fadeIn 2s ease forwards 1s;
+    padding: 0 20px;
   }
 
-  @keyframes fadeIn {
-    to { opacity: 1; transform: scale(1.05); }
-  }
-  @keyframes fadeOut {
-    to { opacity: 0; visibility: hidden; }
-  }
+  @keyframes fadeIn { to { opacity: 1; transform: scale(1.05); } }
+  @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
   /* ---------- Background sao ---------- */
   .stars {
@@ -50,12 +51,12 @@
     width: 2px;
     height: 2px;
     background: white;
-    animation: moveStars 20s linear infinite;
+    animation: moveStars 25s linear infinite;
   }
 
   @keyframes moveStars {
     0% { transform: translateY(0px); opacity: 1; }
-    100% { transform: translateY(200px); opacity: 0.2; }
+    100% { transform: translateY(200px); opacity: 0.3; }
   }
 
   /* ---------- Container ---------- */
@@ -64,29 +65,35 @@
     width: 100%;
     height: 100%;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     flex-direction: column;
+    padding-top: 80px;
   }
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
     justify-items: center;
-    margin-top: 80px;
+    width: 90%;
+    max-width: 500px;
   }
 
   /* ---------- Đĩa nhạc (ảnh) ---------- */
   .disc {
-    width: 140px;
-    height: 140px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     background-image: url('dia.png');
     background-size: cover;
     background-position: center;
-    box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    box-shadow: 0 0 12px rgba(255,255,255,0.3);
     cursor: pointer;
-    transition: transform 0.5s ease;
+    transition: transform 0.3s ease;
+  }
+
+  .disc:active {
+    transform: scale(0.95);
   }
 
   .disc.playing {
@@ -101,15 +108,19 @@
 
   .message {
     margin-top: 10px;
-    font-size: 0.95em;
+    font-size: 0.9em;
     opacity: 0;
-    transition: opacity 1s ease;
+    transition: opacity 0.8s ease;
     text-align: center;
-    width: 160px;
+    width: 150px;
+    line-height: 1.4em;
   }
 
-  .message.show {
-    opacity: 1;
+  .message.show { opacity: 1; }
+
+  @media (min-width: 768px) {
+    .grid { grid-template-columns: repeat(3, 1fr); gap: 40px; }
+    .disc { width: 140px; height: 140px; }
   }
 
 </style>
@@ -117,7 +128,7 @@
 <body>
 
 <div id="intro">
-  <h1>Chúc chị bé ngủ thật ngon và quên hết mọi muộn phiền nha 🌙</h1>
+  <h1>Chúc chị bé ngủ thật ngon và quên hết mọi muộn phiền nha 🌙💤</h1>
 </div>
 
 <div id="main">
@@ -133,12 +144,13 @@
 
 <script>
   /* ---------- Hiệu ứng sao ---------- */
-  for (let i = 0; i < 150; i++) {
+  const numStars = (window.innerWidth < 600) ? 100 : 200;
+  for (let i = 0; i < numStars; i++) {
     let s = document.createElement('div');
     s.classList.add('stars');
     s.style.top = Math.random() * window.innerHeight + 'px';
     s.style.left = Math.random() * window.innerWidth + 'px';
-    s.style.animationDuration = 15 + Math.random() * 10 + 's';
+    s.style.animationDuration = 15 + Math.random() * 15 + 's';
     s.style.opacity = Math.random();
     document.body.appendChild(s);
   }
@@ -152,12 +164,8 @@
 
   /* ---------- Nhạc + lời chúc ---------- */
   const songs = [
-    'song1.mp3',
-    'song2.mp3',
-    'song3.mp3',
-    'song4.mp3',
-    'song5.mp3',
-    'song6.mp3'
+    'song1.mp3', 'song2.mp3', 'song3.mp3',
+    'song4.mp3', 'song5.mp3', 'song6.mp3'
   ];
 
   const messages = [
@@ -175,6 +183,7 @@
 
   discs.forEach((disc, i) => {
     const audio = new Audio(songs[i]);
+    audio.preload = 'none'; // nhẹ hơn cho mobile
     audios.push(audio);
 
     const msg = document.createElement('div');
@@ -183,17 +192,18 @@
     disc.insertAdjacentElement('afterend', msg);
     msgEls.push(msg);
 
+    disc.addEventListener('touchstart', () => disc.click()); // đảm bảo nhận touch
+
     disc.addEventListener('click', () => {
       const isPlaying = disc.classList.contains('playing');
 
-      // Dừng tất cả
       audios.forEach(a => { a.pause(); a.currentTime = 0; });
       discs.forEach(d => d.classList.remove('playing'));
       msgEls.forEach(m => m.classList.remove('show'));
 
       if (!isPlaying) {
         disc.classList.add('playing');
-        audio.play();
+        audio.play().catch(err => console.log('User chưa tương tác:', err));
         msg.classList.add('show');
 
         audio.addEventListener('ended', () => {
